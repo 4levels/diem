@@ -142,15 +142,15 @@ class dmSeoSynchronizer
       {
         $parentSlug = '';
       }
-//      //@todo make this behavior optional ?
-//      $tmp = array();
-//      if($record->getTable()->isNestedSet() && $record->getNode()->hasParent() && $record->getNode()->getParent())
-//      {
-//        $record->getNode()->getParent()->refresh(true);
-//        $parentSlugs = explode('/', $record->getNode()->getParent()->getDmPage()->get('slug'));
-//      }
-//
-//      $parentSlug = implode('/', $parentSlugs);
+      //@todo make this behavior optional ?
+      $tmp = array();
+      if($record->getTable()->isNestedSet() && $record->getNode()->hasParent() && $record->getNode()->getParent())
+      {
+        $record->getNode()->getParent()->refresh(true);
+        $parentSlugs = explode('/', $record->getNode()->getParent()->getDmPage()->get('slug'));
+      }
+
+      $parentSlug = implode('/', $parentSlugs);
       $modifiedFields = $this->updatePage($page, $module, $record, $patterns, $parentSlug);
 
       if (!empty($modifiedFields))

@@ -355,23 +355,22 @@ class dmPageSynchronizer
     $recordTable  = $module->getTable();
     $pageTable    = dmDb::table('DmPage');
 
-    if ($parentModule->getKey() === $module->getKey()) // parent page is a list page
     //@todo make this behavior optional to not break BC ?
-//    if($recordTable->isNestedSet())
-//    {
-//      $recordObj = $recordTable->findOneBy($recordTable->getIdentifier(), $record['id']);
-//      $recordNode = $recordObj->getNode();
-//      if($recordNode->isRoot())
-//      {
-//        $parentPageId = $parentPageIds;
-//      }
-//      else
-//      {
-//        $parentRecord = $recordNode->getParent();
-//        $parentPageId = $parentRecord->getDmPage()->get('id');
-//      }
-//    }
-//    elseif ($parentModule->getKey() === $module->getKey()) // parent page is a list page
+    if($recordTable->isNestedSet())
+    {
+      $recordObj = $recordTable->findOneBy($recordTable->getIdentifier(), $record['id']);
+      $recordNode = $recordObj->getNode();
+      if($recordNode->isRoot())
+      {
+        $parentPageId = $parentPageIds;
+      }
+      else
+      {
+        $parentRecord = $recordNode->getParent();
+        $parentPageId = $parentRecord->getDmPage()->get('id');
+      }
+    }
+    elseif ($parentModule->getKey() === $module->getKey()) // parent page is a list page
     {
       $parentPageId = $parentPageIds;
     }
