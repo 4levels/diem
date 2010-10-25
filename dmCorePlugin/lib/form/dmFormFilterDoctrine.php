@@ -81,13 +81,18 @@ abstract class dmFormFilterDoctrine extends sfFormFilterDoctrine
 
   protected function addNumberQuery(Doctrine_Query $query, $field, $values)
   {
+    if(!is_array($values))
+    {
+      $values = array('text' => $values);
+    }
+
     $fieldName = $this->getFieldName($field);
 
-    if (is_array($values) && isset($values['is_empty']) && $values['is_empty'])
+    if (isset($values['is_empty']) && $values['is_empty'])
     {
       $query->addWhere(sprintf('(%s.%s IS NULL OR %1$s.%2$s = ?)', $this->getRootAlias($query, $fieldName), $fieldName), array(''));
     }
-    else if (is_array($values) && isset($values['text']) && '' !== $values['text'])
+    else if (isset($values['text']) && '' !== $values['text'])
     {
       $query->addWhere(sprintf('%s.%s = ?', $this->getRootAlias($query, $fieldName), $fieldName), $values['text']);
     }
@@ -101,37 +106,45 @@ abstract class dmFormFilterDoctrine extends sfFormFilterDoctrine
 
   protected function addDateQuery(Doctrine_Query $query, $field, $values)
   {
-    $fieldName = $this->getFieldName($field);
-
-    switch($values)
+    if(is_array($values))
     {
-      case null:
-      case '':
-        break;
-      case 'today':
-        $query->andWhere(
-          sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
-          date('Y-m-d H:i:s', strtotime('-1 day'))
-        );
-        break;
-      case 'week':
-        $query->andWhere(
-          sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
-          date('Y-m-d H:i:s', strtotime('-1 week'))
-        );
-        break;
-      case 'month':
-        $query->andWhere(
-          sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
-          date('Y-m-d H:i:s', strtotime('-1 month'))
-        );
-        break;
-      case 'year':
-        $query->andWhere(
-          sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
-          date('Y-m-d H:i:s', strtotime('-1 year'))
-        );
-        break;
+      parent::addDateQuery($query, $field, $values);
+    }
+    else
+    {
+      $fieldName = $this->getFieldName($field);
+
+      switch($values)
+      {
+        case null:
+        case '':
+          break;
+        case 'today':
+          $query->andWhere(
+            sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
+            date('Y-m-d H:i:s', strtotime('-1 day'))
+          );
+          break;
+        case 'week':
+          $query->andWhere(
+            sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
+            date('Y-m-d H:i:s', strtotime('-1 week'))
+          );
+          break;
+        case 'month':
+          $query->andWhere(
+            sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
+            date('Y-m-d H:i:s', strtotime('-1 month'))
+          );
+          break;
+        case 'year':
+          $query->andWhere(
+            sprintf('%s.%s >= ?', $this->getRootAlias($query, $fieldName), $fieldName),
+            date('Y-m-d H:i:s', strtotime('-1 year'))
+          );
+          break;
+      }
+
     }
   }
 }
